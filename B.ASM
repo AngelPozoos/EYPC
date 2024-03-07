@@ -1,0 +1,40 @@
+CPU "Z80.TBL"
+HOF "INT8"
+
+EXX
+LD BC,0
+EXX
+LD A, (1200H)
+LD B,A
+DEC B
+LD A,(1210H)
+LD E,A
+LD C,0
+Bucle:	LD IX, 1230H		
+	LD A,C
+	CP B
+	JR Z,CONDI
+	JP M,CONDI
+	LD A,-1
+etiq2:	LD (1220H),A
+	HALT
+CONDI:	ADD A,B
+	LD D,A
+	SRL D
+	SRL A
+	EXX
+	LD C,A
+	ADD IX,BC
+	EXX
+	LD A,E
+	CP(IX+0)
+	JR Z,Encon
+	JP P,etiq3
+	DEC D
+	LD B,D
+	JP Bucle
+etiq3:	INC D
+	LD C,D
+	JP Bucle
+Encon:	LD A,D
+	JP etiq2

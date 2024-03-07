@@ -1,0 +1,21 @@
+ 0000           CPU "Z80.TBL"
+ 0000           HOF "INT8"
+ 0000 2A0010    LD HL, (1000H)
+ 0003 7E        eti1:   LD A, (HL)
+ 0004 FE00              CP 0H
+ 0006 CA1900            JP Z, fin
+ 0009 0E80              LD C,80H
+ 000B B9        eti2:   CP C
+ 000C FA1000            JP M, eti3
+ 000F 91                SUB C
+ 0010 CB09      eti3:   RRC C
+ 0012 FE00              CP 0H
+ 0014 CA0B00            JP Z, eti2
+ 0017 23                INC HL
+ 0018 0C                INC C
+ 0019 C30300    fin:    JP eti1
+ 001C 76                HALT
+                         0000           	END
+0003  ETI1               000B  ETI2               0010  ETI3               
+0019  FIN                
+

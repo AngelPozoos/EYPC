@@ -1,0 +1,51 @@
+ 0000           CPU "Z80.TBL"
+ 0000           HOF "INT8"
+                
+ 0000 D9        EXX
+ 0001 213013    LD HL,1330H
+ 0004 010000    LD BC,0
+ 0007 110000    LD DE,0
+ 000A D9        EXX
+ 000B 210013    LD HL,1300H
+ 000E 1600      LD D,0
+ 0010 ED4B0013  LD BC,(1300H)
+ 0014           Bucle:
+ 0014 DD213013      LD IX,1330H
+ 0018 7A            LD A,D
+ 0019 BE            CP (HL)
+ 001A 281F          JR Z,FIN
+ 001C DD09          ADD IX,BC
+ 001E 3E00          LD A,0
+ 0020 DDBE00        CP (IX+0)
+ 0023 2806          JR Z,Posible
+ 0025 1600          LD D,0
+ 0027 03            INC BC
+ 0028 C31400        JP Bucle
+ 002B           Posible:
+ 002B 7A            LD A,D
+ 002C FE00          CP 0
+ 002E 2804          JR Z,Inicial
+ 0030           INCM:
+ 0030 03            INC BC
+ 0031 14            INC D
+ 0032 18E0          JR Bucle
+ 0034           Inicial:
+ 0034 79            LD A,C
+ 0035 D9            EXX
+ 0036 5F            LD E,A
+ 0037 D9            EXX
+ 0038 C33000        JP INCM
+ 003B           FIN:
+ 003B D9            EXX
+ 003C ED4B0013      LD BC,(1300H)
+ 0040 3E00          LD A,0
+ 0042 77            LD (HL),A  
+ 0043 19            ADD HL,DE
+ 0044 113013        LD DE,1330H
+ 0047 EB            EX DE,HL
+ 0048 EDB0          LDIR
+ 004A 76            HALT
+ 0000           	END
+0014  BUCLE              003B  FIN                0030  INCM               
+0034  INICIAL            002B  POSIBLE            
+

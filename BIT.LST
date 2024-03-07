@@ -1,0 +1,18 @@
+ 0000           CPU "Z80.TBL"
+ 0000           HOF "INT8"
+ 1000           ORG 1000H
+ 1000 3E00      LD A,0
+ 1002 4F        LD C,A
+ 1003 3A0010    LD A,(1000H)
+ 1006 FE07      CP 7
+ 1008 D21210    JP NC, FIN
+ 100B 47        LD B,A
+ 100C CB07      RLC A
+ 100E CB00      RLC B
+ 1010 B0        OR B
+ 1011 4F        LD C,A
+ 1012 76            FIN:    HALT
+                
+ 0000           	END
+1012  FIN                
+

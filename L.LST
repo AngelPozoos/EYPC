@@ -1,0 +1,56 @@
+ 0000           CPU "Z80.TBL"
+ 0000           HOF "INT8"
+                
+ 0000 DD213010  LD IX,1030H ;Ubicacion de la cadena
+ 0004 215010    LD HL,1050H ;Ubicacion del texto
+ 0007 FD211310  LD IY,1013H ;Donde va a poner el indice de los iniales hacia adelante
+ 000B D9        EXX
+ 000C 010000    LD BC,0
+ 000F D9        EXX
+ 0010 3A1010    LD A,(1010H); Ubicacion longitud cadena
+ 0013 4F        LD C,A
+ 0014 3A2010    LD A,(1020H); Ubicacion longitud texto
+ 0017 5F        LD E,A
+ 0018 0600      LD B,0
+ 001A 7B        Bucle:	LD A,E
+ 001B B8        	CP B
+ 001C 2830      	JR Z,FIN
+ 001E DD7E00    	LD A,(IX +0)
+ 0021 BE        	CP (HL)
+ 0022 280B      	JR Z,SoIgu
+ 0024 DD213010  	LD IX,1030H
+ 0028 1600      	LD D,0
+ 002A 04        etiq:	INC B
+ 002B 23        	INC HL
+ 002C C31A00    	JP Bucle
+ 002F 14        SoIgu:	INC D
+ 0030 DD23      	INC IX
+ 0032 7A        	LD A,D
+ 0033 FE01      	CP 1
+ 0035 281D      	JR Z,DirIni
+ 0037 7A        Sigui:	LD A,D		
+ 0038 B9        	CP C
+ 0039 FA2A00    	JP M,etiq
+ 003C D9        	EXX
+ 003D 03        	INC BC
+ 003E 7B        	LD A,E
+ 003F FD7700    	LD (IY+0),A
+ 0042 D9        	EXX
+ 0043 FD23      	INC IY
+ 0045 1600      	LD D,0
+ 0047 DD213010  	LD IX,1030H
+ 004B C32A00    	JP etiq
+ 004E D9        FIN:	EXX	
+ 004F ED431110  	LD (1011H),BC ;Donde va a poner el numero de repeticiones
+ 0053 76        	HALT
+ 0054 78        DirIni:	LD A,B
+ 0055 D9        	EXX
+ 0056 5F        	LD E,A
+ 0057 D9        	EXX
+ 0058 C33700    	JP Sigui
+                	
+ 0000           	END
+001A  BUCLE              0054  DIRINI             002A  ETIQ               
+004E  FIN                0037  SIGUI              002F  SOIGU              
+
+

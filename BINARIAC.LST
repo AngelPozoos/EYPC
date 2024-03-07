@@ -1,0 +1,44 @@
+ 0000           CPU "Z80.TBL"
+ 0000           HOF "INT8"
+ 047E           ORG 1150
+ 047E D9        EXX
+ 047F 010000    LD BC, 0 ; Se movera como nuestro indice en nuestro: arreglo [BC]		
+ 0482 D9        EXX
+ 0483 3AB004    LD A, (1200) ;Tamaño del arreglo
+ 0486 47        LD B, A	; Se guarda en B
+ 0487 05        DEC B
+ 0488 3ABA04    LD A, (1210) ;Es el valor que buscamos
+ 048B 5F        LD E, A	;Y se guarda en E
+ 048C 0E00      LD C, 0	;C es nuestro indice inicial
+ 048E DD21CE04  bucle:	LD IX, 1230	;Ubicacion del primer valor del arreglo	
+ 0492 79        	LD A, C		
+ 0493 B8        	CP B	;Se verifica que si todavia hay valores a comparar, cundo el indice incial es 
+ 0494 2809      	JR Z, condi	
+ 0496 FA9F04    	JP M, condi	;Se verifica si es menor o igual al indice final 
+ 0499 3EFF      	LD A, -1
+ 049B 32B104    etiqdos:	LD (1201), A	;Se guarda el resultado
+ 049E 76        	HALT
+ 049F 80        condi:	ADD A, B		;El indice de medio es D = (indicefinal+indiceINicial)//2
+ 04A0 57        	LD D, A
+ 04A1 CB3A      	SRL D	;Division entre dos entera
+ 04A3 CB3F      	SRL A
+ 04A5 D9        	EXX
+ 04A6 4F        	LD C, A
+ 04A7 DD09      	ADD IX, BC ;Mueve nuestro indice a la posicion BC
+ 04A9 D9        	EXX
+ 04AA 7B        	LD A, E
+ 04AB DDBE00    	CP (IX+0)
+ 04AE 280D      	JR Z, encon	;Se verifica si en el medio esta nuestro valor
+ 04B0 F2B804    	JP P, etiqtres	;Se verifica si nuestro valor esta  mas arriba del arreglo
+ 04B3 15        	DEC D		;Si es negativo es decir nuestro valor es mas alto se mueve hacia la derecha	
+ 04B4 42        	LD B, D
+ 04B5 C38E04    	JP bucle
+ 04B8 14        etiqtres:	INC D		;Si es positivo significa que nuestro valor es mas bajo se mueve a la izquierda
+ 04B9 4A        	LD C, D
+ 04BA C38E04    	JP bucle
+ 04BD 7A        encon:	LD A, D		;SI se encuentra se guarda el indice de en medio
+ 04BE C39B04    	JP etiqdos
+ 0000           	END
+048E  BUCLE              049F  CONDI              04BD  ENCON              
+049B  ETIQDOS            04B8  ETIQTRES           
+

@@ -1,0 +1,44 @@
+ 0000           CPU "Z80.TBL"
+ 0000           HOF "INT8"
+ 1150           ORG 1150H
+ 1150 D9        EXX
+ 1151 010000    LD BC,0 ; Se movera como nuestro indice en nuestro: arreglo [BC]		
+ 1154 D9        EXX
+ 1155 3A0012    LD A, (1200H) ;Tamaño del arreglo
+ 1158 47        LD B,A	; Se guarda en B
+ 1159 05        DEC B
+ 115A 3A1012    LD A,(1210H) ;Es el valor que buscamos
+ 115D 5F        LD E,A	;Y se guarda en E
+ 115E 0E00      LD C,0	;C es nuestro indice inicial
+ 1160 DD213012  Bucle:	LD IX, 1230H	;Ubicacion del primer valor del arreglo	
+ 1164 79        	LD A,C		
+ 1165 B8        	CP B	;Se verifica que si todavia hay valores a comparar, cundo el indice incial es 
+ 1166 2809      	JR Z,CONDI	
+ 1168 FA7111    	JP M,CONDI	;Se verifica si es menor o igual al indice final 
+ 116B 3EFF      	LD A,-1
+ 116D 320112    etiq2:	LD (1201H),A	;Se guarda el resultado
+ 1170 76        	HALT
+ 1171 80        CONDI:	ADD A,B		;El indice de medio es D = (indicefinal+indiceINicial)//2
+ 1172 57        	LD D,A
+ 1173 CB3A      	SRL D	;Division entre dos entera
+ 1175 CB3F      	SRL A
+ 1177 D9        	EXX
+ 1178 4F        	LD C,A
+ 1179 DD09      	ADD IX,B C ;Mueve nuestro indice a la posicion BC
+ 117B D9        	EXX
+ 117C 7B        	LD A,E
+ 117D DDBE00    	CP(IX+0)
+ 1180 280D      	JR Z,Encon	;Se verifica si en el medio esta nuestro valor
+ 1182 F28A11    	JP P,etiq3	;Se verifica si nuestro valor esta  mas arriba del arreglo
+ 1185 15        	DEC D		;Si es negativo es decir nuestro valor es mas alto se mueve hacia la derecha	
+ 1186 42        	LD B,D
+ 1187 C36011    	JP Bucle
+ 118A 14        etiq3:	INC D		;Si es positivo significa que nuestro valor es mas bajo se mueve a la izquierda
+ 118B 4A        	LD C,D
+ 118C C36011    	JP Bucle
+ 118F 7A        Encon:	LD A,D		;SI se encuentra se guarda el indice de en medio
+ 1190 C36D11    	JP etiq2
+ 0000           	END
+1160  BUCLE              1171  CONDI              118F  ENCON              
+116D  ETIQ2              118A  ETIQ3              
+

@@ -1,0 +1,34 @@
+CPU "Z80.TBL"
+HOF "INT8"
+
+LD SP, 2000H
+LD A,(1400H) ;Aqui se pone el factorial a buscar
+CP 0
+JR Z,FAC0
+CALL FACN
+FAC0:	LD (1410H),HL
+HALT
+
+FACN:	CP 1
+	JR Z,FAC1
+	LD C,A
+	PUSH BC
+	DEC A
+	CALL FACN
+	POP BC
+	LD D,H
+	LD E,L
+	LD HL,0
+MULTI:	ADD HL,DE
+	DEC BC
+	LD A,C
+	CP 0
+	JR Z,Sifac
+	JP MULTI
+
+Sifac:	RET
+
+FAC1:	LD HL,1
+	RET
+
+		

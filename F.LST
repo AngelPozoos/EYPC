@@ -1,0 +1,38 @@
+ 0000           CPU "Z80.TBL"
+ 0000           HOF "INT8"
+                
+ 0000 310020    LD SP, 2000H
+ 0003 3A0014    LD A,(1400H)
+ 0006 FE00      CP 0
+ 0008 2803      JR Z,FAC0
+ 000A CD1100    CALL FACN
+ 000D 221014    FAC0:	LD (1410H),HL
+ 0010 76        HALT
+                
+ 0011 FE01      FACN:	CP 1
+ 0013 2817      	JR Z,FAC1
+ 0015 4F        	LD C,A
+ 0016 C5        	PUSH BC
+ 0017 3D        	DEC A
+ 0018 CD1100    	CALL FACN
+ 001B C1        	POP BC
+ 001C 54        	LD D,H
+ 001D 5D        	LD E,L
+ 001E 210000    	LD HL,0
+ 0021 19        MULTI:	ADD HL,DE
+ 0022 0B        	DEC BC
+ 0023 79        	LD A,C
+ 0024 FE00      	CP 0
+ 0026 2803      	JR Z,Sifac
+ 0028 C32100    	JP MULTI
+                
+ 002B C9        Sifac:	RET
+                
+ 002C 210100    FAC1:	LD HL,1
+ 002F C9        	RET
+                
+                		
+ 0000           	END
+000D  FAC0               002C  FAC1               0011  FACN               
+0021  MULTI              002B  SIFAC              
+

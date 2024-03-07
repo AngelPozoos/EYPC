@@ -1,0 +1,59 @@
+ 0000           CPU "Z80.TBL"
+ 0000           HOF "INT8"
+ 0F80           ORG 0F80H
+ 0F80 DD213010  LD IX,1030H ;Ubicacion de la cadena
+ 0F84 215010    LD HL,1050H ;Ubicacion del texto
+ 0F87 FD211310  LD IY,1013H ;Donde va a poner el indice de los iniales hacia adelante
+ 0F8B D9        EXX
+ 0F8C 010000    LD BC,0
+ 0F8F D9        EXX
+ 0F90 3A1010    LD A,(1010H); Ubicacion longitud cadena
+ 0F93 4F        LD C,A
+ 0F94 3A2010    LD A,(1020H); Ubicacion longitud texto
+ 0F97 5F        LD E,A
+ 0F98 0600      LD B,0
+ 0F9A 7B        Bucle:	LD A,E ;Se verifica si se es que ya acabo de recorrer todo el texto
+ 0F9B B8        	CP B
+ 0F9C 2836      	JR Z,FIN
+ 0F9E DD7E00    	LD A,(IX +0)
+ 0FA1 BE        	CP (HL)
+ 0FA2 2811      	JR Z,SoIgu	;Se compara el valor del cadena actual con el caracter actual del texto
+ 0FA4 DD213010  	LD IX,1030H	;Reincia el apuntado de la cadena al primero y reinicia D = Se encontro la cadenacompleta
+ 0FA8 1600      	LD D,0
+ 0FAA 7E        	LD A,(HL)	;Si no son iguales pero el valor que sigue es el inicial se reinicia la cuenta
+ 0FAB DDBE00    	CP (IX +0)
+ 0FAE 2805      	JR Z,SoIgu
+ 0FB0 04        etiq:	INC B		
+ 0FB1 23        	INC HL
+ 0FB2 C39A0F    	JP Bucle
+ 0FB5 14        SoIgu:	INC D	;Si son iguales entonces se incrementa D y se mueve al siguiente de la cadena
+ 0FB6 DD23      	INC IX
+ 0FB8 7A        	LD A,D
+ 0FB9 FE01      	CP 1
+ 0FBB 281D      	JR Z,DirIni ;Si es el primer valor de la cadena se guarda tentativamente la ubicacion
+ 0FBD 7A        Sigui:	LD A,D		
+ 0FBE B9        	CP C
+ 0FBF FAB00F    	JP M,etiq
+ 0FC2 D9        	EXX
+ 0FC3 03        	INC BC
+ 0FC4 7B        	LD A,E
+ 0FC5 FD7700    	LD (IY+0),A ;Se encontro la cadena entonces se guarda su direccion y se lleva su contador
+ 0FC8 D9        	EXX
+ 0FC9 FD23      	INC IY
+ 0FCB 1600      	LD D,0
+ 0FCD DD213010  	LD IX,1030H
+ 0FD1 C3B00F    	JP etiq
+ 0FD4 D9        FIN:	EXX	
+ 0FD5 ED431110  	LD (1011H),BC ;Donde va a poner el numero de repeticiones
+ 0FD9 76        	HALT
+ 0FDA 78        DirIni:	LD A,B	;Se guarda la direccion tentativa inicial
+ 0FDB D9        	EXX
+ 0FDC 5F        	LD E,A
+ 0FDD D9        	EXX
+ 0FDE C3BD0F    	JP Sigui
+                	
+ 0000           	END
+0F9A  BUCLE              0FDA  DIRINI             0FB0  ETIQ               
+0FD4  FIN                0FBD  SIGUI              0FB5  SOIGU              
+
+

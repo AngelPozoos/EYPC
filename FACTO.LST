@@ -1,0 +1,42 @@
+ 0000           CPU "Z80.TBL"
+ 0000           HOF "INT8"
+ 1350           ORG 1350H
+ 1350 310020    LD SP, 2000H ;Se establece el lugar de la pila
+ 1353 3A0014    LD A,(1400H) ;Aqui se pone el factorial a buscar
+ 1356 210100    LD HL,1H
+ 1359 FE00      CP 0
+ 135B 2803      JR Z,FAC0	;Primero se verifica si el factorial es 0
+ 135D CD6913    CALL FACN	
+ 1360 7D        FAC0:	LD A,L ; Donde se guardara el valor
+ 1361 321114    	LD (1411H),A
+ 1364 7C        	LD A,H
+ 1365 321014    	LD (1410H),A
+ 1368 76        HALT
+                
+ 1369 FE01      FACN:	CP 1	;Caso base, cuando se llega el factorial de 1
+ 136B 2817      	JR Z,FAC1
+ 136D 4F        	LD C,A
+ 136E C5        	PUSH BC	;Se van guardando el multiplicador de cada factorial, HL * i
+ 136F 3D        	DEC A
+ 1370 CD6913    	CALL FACN ;Recursividad
+ 1373 C1        	POP BC	;Cuando se llego al caso base, se empiezan a sacar los multiplicadores 
+ 1374 54        	LD D,H	
+ 1375 5D        	LD E,L
+ 1376 210000    	LD HL,0
+ 1379 19        MULTI:	ADD HL,DE ;Se multiplican con HL como multilplicando y BC es el multiplicador que es el fac delNUm actual
+ 137A 0B        	DEC BC
+ 137B 79        	LD A,C
+ 137C FE00      	CP 0
+ 137E 2803      	JR Z,Sifac
+ 1380 C37913    	JP MULTI
+                
+ 1383 C9        Sifac:	RET
+                
+ 1384 210100    FAC1:	LD HL,1		;HL sera el multiplicando, que se modificara mientras se van sacando sus valores
+ 1387 C9        	RET
+                
+                		
+ 0000           	END
+1360  FAC0               1384  FAC1               1369  FACN               
+1379  MULTI              1383  SIFAC              
+

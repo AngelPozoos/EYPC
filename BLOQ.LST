@@ -1,0 +1,112 @@
+ 0000           CPU "Z80.TBL"
+ 0000           HOF "INT8"
+ 1430           ORG 1430H
+                ;La longitud de memoria se extiende 1510H a 1530H
+ 1430 D9        EXX 
+ 1431 2A0215    LD HL,(1502H) ;Direccion del bloque en memoria
+ 1434 ED5B0A15  LD DE,(150AH) ; Direccion del ultimo elemento en memoria
+ 1438 D9        EXX
+ 1439 3A0515    LD A,(1505H)
+ 143C FE10      CP 10H
+ 143E FAD014    JP M,FIN1
+ 1441 3A0015    YARecorrio:	LD A, (1500H) ; Se obtiene el tamaño del bloque a mover
+ 1444 4F        	LD C,A ;DEspues de recorrer la memoria se reinicia el sistema para mover el bloque
+ 1445 0C        	INC C
+ 1446 0C        	INC C
+ 1447 DD2A0515  	LD IX,(1505H) ;Lugar donde se movera el bloque de codigo, se obtiene su direccion
+ 144B 3A0515    	LD A,(1505H)
+ 144E 5F        	LD E,A
+ 144F DD2B      	DEC IX 
+ 1451 2600      	LD H,0
+ 1453 0600      	LD B,0
+ 1455 78        Bucle:	LD A, B ;Se sigue checando la memoria
+ 1456 B9        	CP C 
+ 1457 201B      	JR NZ, Sigue ; Si no se cumple significa que ya tiene espacio y puede meter la cadena
+ 1459 2A0215    EM:	LD HL, (1502H) ; Direccion de inicio del bloque a mover y se guarda en HL(SE ESCRIBE 1526H AL REVES)
+ 145C ED5B0515  	LD DE, (1505H); Direccion final del bloque
+ 1460 ED4B0015  	LD BC,(1500H) ;Tamaño del bloque a mover
+ 1464 7E        Mov:	LD A, (HL) ;Mueve el bloque solicitado
+ 1465 12        	LD (DE),A
+ 1466 3600      	LD (HL),0
+ 1468 23        	INC HL
+ 1469 13        	INC DE
+ 146A 0B        	DEC BC
+ 146B 79        	LD A,C
+ 146C FE00      	CP 0
+ 146E 2803      	JR Z, FIN
+ 1470 C36414    	JP Mov
+ 1473 76        FIN:	HALT
+                ;Se sigue checando si cabe en el espacio nuestro bloque a mover	
+ 1474 3E00      Sigue:	LD A,0
+ 1476 DDBE00    	CP (IX +0)
+ 1479 280D      	JR Z, SonIguales
+                ;Si no esta vacio se busca la longitud del bloque que ocupa su lugar	
+ 147B 24        Checa:	INC H
+ 147C DD23      	INC IX
+ 147E 3E00      	LD A,0
+ 1480 DDBE00    	CP (IX+0)
+ 1483 281F      	JR Z, Recorre
+ 1485 C37B14    	JP Checa
+ 1488 04        SonIguales:	INC B	;Si es cero el valor se sigue buscando en la memoria
+ 1489 DD23      		INC IX
+ 148B 1C        		INC E
+ 148C 3A0215    		LD A,(1502H)
+ 148F BB        		CP E
+ 1490 28C7      		JR Z,EM
+ 1492 C35514    		JP Bucle
+                ;LDIR modificado para dejar en cero el bloque original		
+ 1495 7E        LDIRMo:	LD A,(HL)
+ 1496 12        	LD (DE),A
+ 1497 3600      	LD (HL),0
+ 1499 13        	INC DE
+ 149A 23        	INC HL
+ 149B 0B        	DEC BC
+ 149C 79        	LD A,C
+ 149D FE00      	CP 0
+ 149F 28A0      	JR Z, YARecorrio
+ 14A1 C39514    	JP LDIRMo
+                ;Recorremos toda la memoria NL + i veces
+ 14A4           Recorre:
+ 14A4 D9        	EXX
+ 14A5 7B        	LD A,E
+ 14A6 D9        	EXX
+ 14A7 5F        	LD E,A
+ 14A8 78        	LD A, B
+ 14A9 84        	ADD A,H
+ 14AA 47        	LD B,A
+ 14AB 7B        	LD A,E
+ 14AC 90        	SUB B
+ 14AD 47        	LD B,A
+ 14AE D9        	EXX
+ 14AF ED52      	SBC HL,DE
+ 14B1 7D        	LD A,L
+ 14B2 D9        	EXX
+ 14B3 4F        	LD C,A
+ 14B4 1615      	LD D,15H
+ 14B6 58        	LD E,B
+ 14B7 0600      	LD B,0
+ 14B9 7B        	LD A,E
+ 14BA D9        	EXX 
+ 14BB 6B        	LD L,E
+ 14BC 5F        	LD E,A
+ 14BD 7D        	LD A,L
+ 14BE 1615      	LD D,15H
+ 14C0 2A0215    	LD HL, (1502H) ;Reestablecemos la direccion del bloque a mover
+ 14C3 D9        	EXX
+ 14C4 6F        	LD L,A
+ 14C5 2615      	LD H,15H
+ 14C7 7B        	LD A,E
+ 14C8 FE10      	CP 10H
+ 14CA FAD014    	JP M,FIN1
+ 14CD C39514    	JP LDIRMo
+                ;Si se quiere acceder a memoria indebida sale un error	
+ 14D0 3EFF      FIN1:	LD A,-1
+ 14D2 320015    	LD (1500H),A
+ 14D5 C37314    	JP FIN		
+                		
+ 0000           	END
+1455  BUCLE              147B  CHECA              1459  EM                 
+1473  FIN                14D0  FIN1               1495  LDIRMO             
+1464  MOV                14A4  RECORRE            1474  SIGUE              
+1488  SONIGUALES         1441  YARECORRIO         
+
